@@ -42,7 +42,6 @@
   (let ((color-cube (make-array '(3 3 3))))
     (setf (aref color-cube 0 1 2) :red)
     (setf (aref color-cube 2 1 0) :white)
-    ;; (format t "~S" color-cube)
     "you may need to modify your array after you make it"
     (if (typep color-cube '(simple-array T (3 3 3)))
         (progn
