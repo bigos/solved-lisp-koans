@@ -37,11 +37,8 @@
     (assert-equal #*0110 (bit-xor #*1100 #*1010)))
 
 
-(defun list-to-bit-vector (my-list)
-  (let ((my-bits (make-array (list-length my-list) :element-type 'bit)))
-    (dotimes (x (list-length my-list))
-      (setf (aref my-bits x) (nth x my-list)))
-    my-bits))
+(defun list-to-bit-vector (my-list) 
+  (make-array (list-length my-list) :element-type 'bit :initial-contents my-list))
 
 (define-test test-list-to-bit-vector
     "you must complete list-to-bit-vector"
