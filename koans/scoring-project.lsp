@@ -56,10 +56,11 @@
     (loop for y in results do 
 	 (if (>= (nth y results) 3) 
 	     ((if (eq 1 (1+ y)) 
-		  (if (eq y 3)))) 
-	     (
-	      (if (eq 1 (1+ y))  (incf total (* 100 (nth 0 results))))))
-	 )
+		  (if (eq y 3)))
+	      ) 
+	     ((if (eq 1 (1+ y))  (incf total (* 100 (nth 0 results))))
+	      )
+	     ))
     (list results total)
 
     ))
