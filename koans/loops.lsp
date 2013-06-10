@@ -125,11 +125,11 @@
                  minimize x into minimized
                  finally (return (list collected counted summed maximized minimized)))))
       (destructuring-bind (col count sum max min) loop-1
-        (assert-equal col ____)
-        (assert-equal count ____)
-        (assert-equal sum ____)
-        (assert-equal max ____)
-        (assert-equal min ____))))
+        (assert-equal col '(1 2 4 8 16))
+        (assert-equal count 5)
+        (assert-equal sum 31)
+        (assert-equal max 16)
+        (assert-equal min 1))))
 
 
 (define-test test-destructuring-bind
@@ -137,15 +137,15 @@
            (result (loop for (a b) in '((1 9) (2 8) (3 7) (4 6))
                         do (setf count (+ 1 count))
                          collect (+ a b))))
-      (assert-equal ____ count)
-      (assert-equal ____ result)))
+      (assert-equal 4 count)
+      (assert-equal '(10 10 10 10) result)))
 
 
 (define-test test-conditional-execution
     (let ((loop-return
            (loop for x in '(1 1 2 3 5 8 13)
                  when (evenp x) sum x)))
-      (assert-equal loop-return ____)))
+      (assert-equal loop-return 10)))
 
 
 (defun greater-than-10-p (x)
@@ -155,11 +155,11 @@
     (let ((loop-return
            (loop for x in '(1 1 2 3 5 8 13)
                  when (greater-than-10-p x) sum x)))
-      (assert-equal loop-return ____)))
+      (assert-equal loop-return 13)))
 
 
 (define-test test-conditional-with-lambda
     (let ((loop-return
            (loop for x in '(1 1 2 3 5 8 13)
                  when ((lambda (z) (equal 1 (mod z 3))) x) sum x)))
-      (assert-equal loop-return ____)))
+      (assert-equal loop-return 15)))
