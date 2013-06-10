@@ -18,7 +18,29 @@
 (define-condition triangle-error  (error) ())
 
 (defun triangle (a b c)
-  :write-me)
+  (let ((measurments (loop for x in (list a b c)
+			collect x into collected
+			maximize x into largest
+			minimize x into smallest
+			finally (return (list smallest (cadr (sort collected #'<)) largest)))))
+    (cond ((or (< (first measurments) 1) 
+	       (<= (+ (first measurments) 
+		      (second measurments)) 
+		   (third measurments))) 
+	   (error 'triangle-error))	  
+	  ((eq (first measurments) 
+	       (second measurments) 
+	       (third measurments))
+	   :equilateral)
+	  ((< (first measurments) 
+	      (second measurments) 
+	      (third measurments)) 
+	   :scalene)
+	  ((or (eq (second measurments)
+		   (first measurments))
+	       (eq (second measurments)
+		   (third measurments))) 
+	   :isosceles))))
 
 
 (define-test test-equilateral-triangles-have-equal-sides
