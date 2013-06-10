@@ -22,14 +22,13 @@
 			collect x into collected
 			maximize x into largest
 			minimize x into smallest
-			finally (return (list smallest (cadr (sort collected #'<)) largest)))))
+			finally (return (list smallest (cadr (sort collected #'<)) largest)))))    
     (cond ((or (< (first measurments) 1) 
 	       (<= (+ (first measurments) 
 		      (second measurments)) 
 		   (third measurments))) 
 	   (error 'triangle-error))	  
-	  ((eq (first measurments) 
-	       (second measurments) 
+	  ((eq (first measurments) 	       
 	       (third measurments))
 	   :equilateral)
 	  ((< (first measurments) 
