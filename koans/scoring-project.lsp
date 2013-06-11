@@ -62,6 +62,7 @@
 		 (t 
 		  (incf total (dice-set z (* 100 z) 0)))))
       total)))
+
 (define-test test-score-of-an-empty-list-is-zero
     (assert-equal 0 (score nil)))
 
