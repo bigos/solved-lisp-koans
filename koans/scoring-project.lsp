@@ -50,20 +50,27 @@
 ; Your goal is to write the score method.
 
 (defun score (dice)
-  (let ((results '(0 0 0 0 0 0)) (total 0))
-    (loop for x in dice do
-	 (incf (nth (1- x) results)))
-    (loop for y in results do 
-	 (if (>= (nth y results) 3) 
-	     ((if (eq 1 (1+ y)) 
-		  (if (eq y 3)))
-	      ) 
-	     ((if (eq 1 (1+ y))  (incf total (* 100 (nth 0 results))))
-	      )
-	     ))
-    (list results total)
-
-    ))
+  (let ((total 0) 
+	(results (loop for x in dice
+		    counting (eq x 1) into n1
+		    counting (eq x 2) into n2
+		    counting (eq x 3) into n3
+		    counting (eq x 4) into n4
+		    counting (eq x 5) into n5
+		    counting (eq x 6) into n6
+		    finally (return (list n1 n2 n3 n4 n5 n6)))))
+    (loop for y in results 
+       for z from 1 to 6 do 	 
+	 (if (or (eq z 1) (eq z 5))
+	     (progn
+	       (when (eq z 1)		  
+		 (incf total (* (floor y 3) 1000))
+		 (incf total (* (mod y 3) 100)))
+	       (when (eq z 5) 	       
+		 (incf total (* (floor y 3) (* 100 z)))
+		 (incf total (* (mod y 3) 50))))	     
+	     (incf total (* (floor y 3) (* 100 z)))))
+    total))
 
 (define-test test-score-of-an-empty-list-is-zero
     (assert-equal 0 (score nil)))
