@@ -50,15 +50,15 @@
 ; Your goal is to write the score method.
 
 (defun score (dice)
-  (flet ((dice-set (z c d)
-	   (+ (* (floor (count z dice) 3) c)
-	      (* (mod   (count z dice) 3) d))))
+  (flet ((dice-set (z sets-val singles-val)
+	   (+ (* (floor (count z dice) 3) sets-val)
+	      (* (mod   (count z dice) 3) singles-val))))
     (let ((total 0))
       (loop for z from 1 to 6 do 	 	       
 	   (cond ((eq z 1)		  
 		  (incf total (dice-set z 1000 100)))
 		 ((eq z 5) 	       
-		  (incf total (dice-set z (* 100 z) 50)))	     
+		  (incf total (dice-set z 500 50)))	     
 		 (t 
 		  (incf total (dice-set z (* 100 z) 0)))))
       total)))
