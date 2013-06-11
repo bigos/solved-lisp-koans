@@ -50,9 +50,10 @@
 ; Your goal is to write the score method.
 
 (defun score (dice)
-  (flet ((sub-score (z sets-val singles-val)
-	   (+ (* (floor (count z dice) 3) sets-val)
-	      (* (mod   (count z dice) 3) singles-val))))
+  (flet ((sub-score (z set-val single-val)
+	   (multiple-value-bind (sets singles) (floor (count z dice) 3)
+	     (+ (* sets set-val)
+		(* singles single-val)))))
     (let ((total 0))
       (loop for z from 1 to 6 do 	 	       
 	   (cond ((eq z 1)		  
