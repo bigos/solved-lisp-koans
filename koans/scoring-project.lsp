@@ -54,16 +54,14 @@
 	   (+ (* (floor (count z dice) 3) c)
 	      (* (mod   (count z dice) 3) d))))
     (let ((total 0))
-      (loop for z from 1 to 6 do 	 
-	   (if (or (eq z 1) (eq z 5))
-	       (progn
-		 (when (eq z 1)		  
-		   (incf total (dice-set z 1000 100)))
-		 (when (eq z 5) 	       
-		   (incf total (dice-set z (* 100 z) 50))))	     
-	       (incf total (dice-set z (* 100 z) 0))))
+      (loop for z from 1 to 6 do 	 	       
+	   (cond ((eq z 1)		  
+		  (incf total (dice-set z 1000 100)))
+		 ((eq z 5) 	       
+		  (incf total (dice-set z (* 100 z) 50)))	     
+		 (t 
+		  (incf total (dice-set z (* 100 z) 0)))))
       total)))
-
 (define-test test-score-of-an-empty-list-is-zero
     (assert-equal 0 (score nil)))
 
