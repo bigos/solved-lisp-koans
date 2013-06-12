@@ -138,18 +138,18 @@
 (defmacro log-form-with-value (&body body)
   "records the body form, and the form's return value
    to the list *log-with-value* and then evalues the body normally"
-  `(let ((logform nil)
-	 (retval ,@body))
-
-     (push '(:form ,@body :value retval) *log-with-value*)
-
-     retval))
+  (let ((retval2 (eval (car body))))
+    `(let ((logform nil)
+	   (retval ,@body))
+       '(push '(:form ,@body :value ,retval2) *log-with-value*)
+       retval)))
 
 
 
 (define-test test-log-form-and-value
     "log should start out empty"
   (assert-equal nil *log-with-value*)
+(format t "+++55555555555++++++  ~S~%" *log-with-value*)
   "log-form-with-value does not interfere with the usual return value"
   (assert-equal 1978 (log-form-with-value (* 2 23 43)))
   "log-form records the code which it has been passed"
