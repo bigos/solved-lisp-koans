@@ -135,31 +135,41 @@
 (defvar *log-with-value* nil)
 
 ;; you must write this macro
+;; (defmacro log-form-with-value (&body body)
+;;   "records the body form, and the form's return value
+;;    to the list *log-with-value* and then evalues the body normally"
+;;   `(let ((logform nil)
+;;          (retval ,@body))
+;;      (push '(:form ,@body :value ,(eval (car body))) *log-with-value*))
+;;   retval)
 (defmacro log-form-with-value (&body body)
   "records the body form, and the form's return value
    to the list *log-with-value* and then evalues the body normally"
-  (let ((retval2 (eval (car body))))
-    `(let ((logform nil)
-	   (retval ,@body))
-       '(push '(:form ,@body :value ,retval2) *log-with-value*)
-       retval)))
-
+  `(let ((logform ',@body)
+         (retval ,@body))
+     (push `(:form ,logform :value ,retval) *log-with-value*)
+     retval))
 
 
 (define-test test-log-form-and-value
     "log should start out empty"
   (assert-equal nil *log-with-value*)
-(format t "+++55555555555++++++  ~S~%" *log-with-value*)
+(format t "+++ffff++++++  ~S~%" *log-with-value*)
   "log-form-with-value does not interfere with the usual return value"
   (assert-equal 1978 (log-form-with-value (* 2 23 43)))
+(format t "+++++++++  ~S~%" *log-with-value*)
   "log-form records the code which it has been passed"
   (assert-equal 1 (length *log-with-value*))
-(format t "+++++++++  ~S~%" *log-with-value*)
+(format t "++++f+++++  ~S~%" *log-with-value*)
   (assert-equal '(:form (* 2 23 43) :value 1978) (first *log-with-value*))
+(format t "+++++++++  ~S~%" *log-with-value*)
   "macros evaluating to more macros is ok, if confusing"
   (assert-equal 35 (log-form-with-value (log-form-with-value (- 2013 1978))))
 (format t "+++++++++  ~S~%" *log-with-value*)
   (assert-equal 3 (length *log-with-value*))
+(format t "++f+++++++  ~S~%" *log-with-value*)
   (assert-equal '(:form (log-form-with-value (- 2013 1978)) :value 35) (first *log-with-value*))
 (format t "+++++++++  ~S~%" *log-with-value*)
-  (assert-equal '(:form (- 2013 1978) :value 35) (second *log-with-value*)))
+  (assert-equal '(:form (- 2013 1978) :value 35) (second *log-with-value*))
+(format t "+++++++++  ~S~%" *log-with-value*)
+)
