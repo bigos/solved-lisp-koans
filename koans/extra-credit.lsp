@@ -52,9 +52,8 @@
 	(append (players object) `(,(make-instance 'player :name player-name)))))
 
 (defmethod play ((object game))
-  (dolist (x (players object) 
-	   (format t "~S is playing now~%" (type-of x))
-	   )))
+  (dolist (x (players object)) 
+    (format t "~&~S is playing now~%"  (get-name x))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defparameter *game* (make-instance 'game))
