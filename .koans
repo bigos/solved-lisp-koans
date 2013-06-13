@@ -26,4 +26,5 @@
  :macros
  :scope-and-extent
  #+sbcl :threads
+ :extra-credit
 )
