@@ -18,12 +18,11 @@
 
 ;; -----------------------------------------------------
 (defclass game ()
-  ((players :initform nil)))
+  ((players :reader players :initform nil)))
 
 (defmethod add-player ((object game) player-name)
   (setf (slot-value object 'players) 
-	(append (slot-value object 'players) 
-		`(,(make-instance 'player :name player-name)))))
+	(append (players object) `(,(make-instance 'player :name player-name)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-test test-player-creation
@@ -38,8 +37,8 @@
 
 (define-test test-game-creation
     (let ((new-game (make-instance 'game)))
-      (assert-equal nil (slot-value new-game 'players))
+      (assert-equal nil (players new-game))
       (add-player new-game "Jacek")
-      (assert-equal "Jacek" (slot-value (first (slot-value new-game 'players)) 'name))
+      (assert-equal "Jacek" (get-name (first (players new-game))))
       (add-player new-game "Chris")
-      (assert-equal "Chris" (slot-value (second (slot-value new-game 'players)) 'name))))
+      (assert-equal "Chris" (get-name (second (players new-game))))))
