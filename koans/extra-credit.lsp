@@ -51,6 +51,18 @@
   (setf (slot-value object 'players) 
 	(append (players object) `(,(make-instance 'player :name player-name)))))
 
+(defmethod play ((object game))
+  (dolist (x (players object) 
+	   (format t "~S is playing now~%" (type-of x))
+	   )))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defparameter *game* (make-instance 'game))
+
+(dolist (player '("Jacek" "Martin" "Chris"))
+  (add-player *game* player))
+
+(play *game*)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-test test-player-creation
