@@ -10,30 +10,31 @@
 
 
 (defclass player ()
-  ((name :initarg :name)
+  ((name :reader get-name :initarg :name)
    (score :accessor score :initform 0)))
 
 (defmethod add-score ((object player) score)
-  (incf (slot-value object 'score) score))
+  (incf (score object) score))
 
-
+;; -----------------------------------------------------
 (defclass game ()
   ((players :initform nil)))
 
 (defmethod add-player ((object game) player-name)
-  (push (make-instance 'player :name player-name)
-	(slot-value object 'players)))
+  (setf (slot-value object 'players) 
+	(append (slot-value object 'players) 
+		`(,(make-instance 'player :name player-name)))))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-test test-player-creation
     (let ((new-player (make-instance 'player :name "Jacek")))
-      (assert-equal "Jacek" (slot-value new-player 'name))
-      (assert-equal 0 (slot-value new-player 'score))))
+      (assert-equal "Jacek" (get-name new-player))
+      (assert-equal 0 (score new-player))))
 
 (define-test test-adding-score
     (let ((new-player (make-instance 'player :name "Jacek")))
       (add-score new-player 7)
-      (assert-equal 7 (slot-value new-player 'score))))
+      (assert-equal 7 (score new-player))))
 
 (define-test test-game-creation
     (let ((new-game (make-instance 'game)))
@@ -41,5 +42,4 @@
       (add-player new-game "Jacek")
       (assert-equal "Jacek" (slot-value (first (slot-value new-game 'players)) 'name))
       (add-player new-game "Chris")
-      (assert-equal "Chris" (slot-value (first (slot-value new-game 'players)) 'name))
-      (assert-equal "Jacek" (slot-value (second (slot-value new-game 'players)) 'name))))
+      (assert-equal "Chris" (slot-value (second (slot-value new-game 'players)) 'name))))
