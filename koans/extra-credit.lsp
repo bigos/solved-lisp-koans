@@ -9,31 +9,62 @@
 
 
 
-(defclass player ()
+(defclass player () ;-----------------------------------------------------
   ((name :reader get-name :initarg :name)
-   (score :accessor score :initform 0)))
+   (total-score :accessor total-score :initform 0)))
 
 (defmethod add-score ((object player) score)
-  (incf (score object) score))
+  (incf (total-score object) score))
 
-;; -----------------------------------------------------
-(defclass game ()
-  ((players :reader players :initform nil)))
+(defclass dice-set () ;-----------------------------------------------------
+  ((values :initform nil)))
+
+(defmethod get-values ((object dice-set))
+  (slot-value object 'values))
+
+(defmethod roll (how-many (object dice-set))
+  (setf (slot-value object 'values) nil)
+  (dotimes (x how-many) 
+    (push (1+ (random 6)) (slot-value object 'values)))
+  (slot-value object 'values))
+
+(defun score (dice)
+  (flet ((sub-score (z set-val single-val)
+	   (multiple-value-bind (sets singles) (floor (count z dice) 3)
+	     (+ (* sets set-val)
+		(* singles single-val)))))
+    (let ((total 0))
+      (loop for z from 1 to 6 do 	 	       
+	   (cond ((eq z 1)		  
+		  (incf total (sub-score z 1000 100)))
+		 ((eq z 5) 	       
+		  (incf total (sub-score z 500 50)))	     
+		 (t 
+		  (incf total (sub-score z (* 100 z) 0)))))
+      total)))
+
+(defclass game () ;-----------------------------------------------------
+  ((players :reader players :initform nil)
+   (dice :reader dice :initform (make-instance 'dice-set))))
 
 (defmethod add-player ((object game) player-name)
   (setf (slot-value object 'players) 
 	(append (players object) `(,(make-instance 'player :name player-name)))))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-test test-player-creation
     (let ((new-player (make-instance 'player :name "Jacek")))
       (assert-equal "Jacek" (get-name new-player))
-      (assert-equal 0 (score new-player))))
+      (assert-equal 0 (total-score new-player))))
 
 (define-test test-adding-score
-    (let ((new-player (make-instance 'player :name "Jacek")))
-      (add-score new-player 7)
-      (assert-equal 7 (score new-player))))
+    (let ((player1 (make-instance 'player :name "Jacek"))
+	  (player2 (make-instance 'player :name "Chris")))
+      (add-score player1 7)
+      (add-score player2 9)
+      (assert-equal 7 (total-score player1))
+      (assert-equal 9 (total-score player2))))
 
 (define-test test-game-creation
     (let ((new-game (make-instance 'game)))
@@ -41,4 +72,7 @@
       (add-player new-game "Jacek")
       (assert-equal "Jacek" (get-name (first (players new-game))))
       (add-player new-game "Chris")
-      (assert-equal "Chris" (get-name (second (players new-game))))))
+      (assert-equal "Chris" (get-name (second (players new-game))))
+      (assert-equal 'dice-set (type-of (dice new-game)))
+      (assert-equal 0 (score (get-values (dice new-game))))
+      ))
