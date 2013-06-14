@@ -52,17 +52,28 @@
 	(append (players object) `(,(make-instance 'player :name player-name)))))
 
 (defmethod play ((object game))
-  (dolist (x (players object)) 
-    (format t "~&~S is playing now~%"  (get-name x))))
+  (dolist (player (players object)) 
+    (format t "~&~S is playing now~%"  (get-name player))
+    (roll 7 (dice object))
+    (add-score player (score (get-values (dice object))))
+    (format t "~s score  ~s" (get-values (dice object)) (total-score player))))
+
+(defmethod winner ((object game))
+  (let ((wins (car (players object))))
+    (dolist (player (players object))
+      (when (> (total-score player) (total-score wins))
+	(setf wins player)))
+    (format t "~s wins" (get-name wins))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  
 (defparameter *game* (make-instance 'game))
 
 (dolist (player '("Jacek" "Martin" "Chris"))
   (add-player *game* player))
 
 (play *game*)
-
+(winner *game*)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-test test-player-creation
     (let ((new-player (make-instance 'player :name "Jacek")))
