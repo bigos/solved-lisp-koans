@@ -52,18 +52,20 @@
 	(append (players object) `(,(make-instance 'player :name player-name)))))
 
 (defmethod play ((object game))
-  (dolist (player (players object)) 
-    (format t "~&~S is playing now~%"  (get-name player))
-    (roll 7 (dice object))
-    (add-score player (score (get-values (dice object))))
-    (format t "~s score  ~s" (get-values (dice object)) (total-score player))))
+  (let ((sc))
+    (dolist (player (players object)) 
+      (format t "~&~S is playing now~%"  (get-name player))
+      (roll 7 (dice object))
+      (add-score player (setf sc (score (get-values (dice object)))))
+      (format t "~s ~s score  ~s" (get-values (dice object)) sc  (total-score player))))
+  (winner object))
 
 (defmethod winner ((object game))
   (let ((wins (car (players object))))
     (dolist (player (players object))
       (when (> (total-score player) (total-score wins))
 	(setf wins player)))
-    (format t "~s wins" (get-name wins))))
+    (format t "~&~s ~s wins" object (get-name wins))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
