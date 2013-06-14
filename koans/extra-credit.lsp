@@ -51,22 +51,27 @@
   (setf (slot-value object 'players) 
 	(append (players object) `(,(make-instance 'player :name player-name)))))
 
-(defmethod play ((object game))
-  (let ((sc))
-    (dolist (player (players object)) 
-      (format t "~&~S is playing now~%"  (get-name player))
-      (roll 7 (dice object))
-      (add-score player (setf sc (score (get-values (dice object)))))
-      (format t "~s ~s score  ~s" (get-values (dice object)) sc  (total-score player))))
-  (winner object))
-
 (defmethod winner ((object game))
   (let ((wins (car (players object))))
     (dolist (player (players object))
       (when (> (total-score player) (total-score wins))
 	(setf wins player)))
-    (format t "~&~s ~s wins" object (get-name wins))))
+    (format t "~2& ~s wins~%"  (get-name wins))))
 
+(defmethod scores ((object game))
+  (let ((score-table (make-array (length (players *game*)))))
+    (format t "~s" score-table)
+    ))
+
+(defmethod play ((object game))
+  (let ((sc))
+    (format t "~&~%")
+    (dolist (player (players object)) 
+      (format t "~&~S is playing now~%"  (get-name player))
+      (roll 7 (dice object))
+      (add-score player (setf sc (score (get-values (dice object)))))
+      (format t "dice ~s - score ~s - total score  ~s" (get-values (dice object)) sc  (total-score player))))
+  (winner object))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
 (defparameter *game* (make-instance 'game))
@@ -75,7 +80,6 @@
   (add-player *game* player))
 
 (play *game*)
-(winner *game*)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-test test-player-creation
     (let ((new-player (make-instance 'player :name "Jacek")))
