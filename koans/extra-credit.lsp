@@ -67,6 +67,12 @@
 	(setf wins player)))
     (format t "~&~s ~s wins" object (get-name wins))))
 
+(defmethod get-scores ((object game))
+  (let ((scores (make-hash-table)))
+    (dolist (player (players object))
+      (setf (gethash '(get-name player) scores) (total-score player)))
+    (format t "~S" scores)
+    ))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
 (defparameter *game* (make-instance 'game))
@@ -76,6 +82,8 @@
 
 (play *game*)
 (winner *game*)
+
+(scores *game*)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-test test-player-creation
     (let ((new-player (make-instance 'player :name "Jacek")))
