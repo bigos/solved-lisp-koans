@@ -22,7 +22,7 @@
 (defmethod get-values ((object dice-set))
   (slot-value object 'values))
 
-(defmethod roll (how-many (object dice-set))
+(defmethod roll (how-many (object dice-set)) 
   (setf (slot-value object 'values) nil)
   (dotimes (x how-many) 
     (push (1+ (random 6)) (slot-value object 'values)))
@@ -81,10 +81,15 @@
     (format t "~&~s ~s wins" object (get-name wins))))
 
 (defmethod get-scores ((object game))
-  (let ((scores))
-    (dolist (player (players object))
-      (push (list (get-name player) (total-score player)) scores))
-    (sort scores #'> :key #'cadr)))
+  (let ((score-sorted-players (sort (players object) #'> :key #'total-score))
+	(last-score 0)
+	(position 0))
+    (dolist (player score-sorted-players)
+      (if (not (= (total-score player) last-score))
+	  (incf position))
+      (setf last-score (total-score player))
+      (format t "~&~d ~a ~S" position (get-name player) (total-score player)))
+    score-sorted-players))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
