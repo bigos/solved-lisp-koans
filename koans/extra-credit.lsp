@@ -83,9 +83,10 @@
 (defmethod get-scores ((object game))
   (let ((scores (make-hash-table)))
     (dolist (player (players object))
-      (setf (gethash '(get-name player) scores) (total-score player)))
-    (format t "~S" scores)
-    ))
+      (setf (gethash `,(get-name player) scores) (total-score player))
+      (format t "~s~&" (get-name player)))
+    (maphash #'(lambda (k v) (format t " >  ~s ~s~%" k v)) scores)
+    scores))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
@@ -95,12 +96,8 @@
   (add-player *game* player))
 
 (play *game*)
-<<<<<<< HEAD
 (winner *game*)
 
-(scores *game*)
-=======
->>>>>>> f6e42a156f3b457acd3938294d46fbbccb74daaf
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-test test-player-creation
     (let ((new-player (make-instance 'player :name "Jacek")))
