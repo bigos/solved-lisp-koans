@@ -81,12 +81,10 @@
     (format t "~&~s ~s wins" object (get-name wins))))
 
 (defmethod get-scores ((object game))
-  (let ((scores (make-hash-table)))
+  (let ((scores))
     (dolist (player (players object))
-      (setf (gethash `,(get-name player) scores) (total-score player))
-      (format t "~s~&" (get-name player)))
-    (maphash #'(lambda (k v) (format t " >  ~s ~s~%" k v)) scores)
-    scores))
+      (push (list (get-name player) (total-score player)) scores))
+    (sort scores #'> :key #'cadr)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
