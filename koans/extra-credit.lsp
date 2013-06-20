@@ -11,6 +11,7 @@
 
 (defclass player () ;-----------------------------------------------------
   ((name :reader get-name :initarg :name)
+   (place :accessor place)
    (total-score :accessor total-score :initform 0)))
 
 (defmethod add-score ((object player) score)
@@ -83,12 +84,13 @@
 (defmethod get-scores ((object game))
   (let ((score-sorted-players (sort (players object) #'> :key #'total-score))
 	(last-score 0)
-	(position 0))
+	(place 0))
     (dolist (player score-sorted-players)
       (if (not (= (total-score player) last-score))
-	  (incf position))
+	  (incf place))
+      (setf (place player) place)
       (setf last-score (total-score player))
-      (format t "~&~d ~a ~S" position (get-name player) (total-score player)))
+      (format t "~&~d ~a ~S" (place player) (get-name player) (total-score player)))
     score-sorted-players))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -100,7 +102,7 @@
 
 (play *game*)
 (winner *game*)
-
+(get-scores *game*)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-test test-player-creation
     (let ((new-player (make-instance 'player :name "Jacek")))
