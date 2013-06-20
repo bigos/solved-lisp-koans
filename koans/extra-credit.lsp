@@ -59,11 +59,6 @@
 	(setf wins player)))
     (format t "~2& ~s wins~%"  (get-name wins))))
 
-(defmethod scores ((object game))
-  (let ((score-table (make-array (length (players *game*)))))
-    (format t "~s" score-table)
-    ))
-
 (defmethod play ((object game))
   (let ((sc))
     (format t "~&~%")
@@ -127,3 +122,19 @@
       (assert-equal 'dice-set (type-of (dice new-game)))
       (assert-equal 0 (score (get-values (dice new-game))))
       ))
+
+(define-test test-game-scoring
+    (let ((new-game (make-instance 'game)))
+      (add-player new-game "Chris")
+      (add-player new-game "Jacek")
+      (add-player new-game "Martin")
+      (let ((player1 (nth 0 (players new-game)))
+	    (player2 (nth 1 (players new-game)))
+	    (player3 (nth 2 (players new-game))))
+	(add-score player1 6)
+	(add-score player2 7)
+	(add-score player3 5)
+	(get-scores new-game)
+	(assert-equal 2 (place player1))
+	(assert-equal 1 (place player2))
+	(assert-equal 3 (place player3)))))
